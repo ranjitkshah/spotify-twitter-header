@@ -8,7 +8,6 @@ const client = require('twitter-api-client');
 
 app = express();
 
-
 const twitterClient = new client.TwitterClient({
     apiKey: process.env.TWITTER_API_KEY, //YOUR CONSUMER API KEY
     apiSecret: process.env.TWITTER_API_SECRET, //YOUR CONSUMER API SECRET
@@ -17,17 +16,13 @@ const twitterClient = new client.TwitterClient({
 });
 
 
-
-
 // cron job to run every day at 12:00 AM to update twitter banner
 cron.schedule('0 0 * * *', async () => {
     console.log('running a task every day at 12:00 AM');
     spotifyTopList().then(res => {
     writeOnImage(res);
+  });
 });
-});
-
-
 
 
 // to get the spotify top tracks
@@ -41,12 +36,13 @@ const spotifyTopList = async () => {
         json: true,
       };
     
-      const res = await getRequest(options);
-      res.items.forEach(track => {
+    const res = await getRequest(options);
+    res.items.forEach(track => {
         topTracks.push(track.name);
-      });
+    });
     return topTracks;
 }
+
 
 // to get the spotify refresh token
 const spotifyRefreshToken = async () => {
@@ -70,11 +66,6 @@ const spotifyRefreshToken = async () => {
       return res.access_token;
 }
     
-
-console.log('test');
-
-
-
 
 // Function to write on image (Top played songs)
 const writeOnImage = async (songsName = []) => {
@@ -119,8 +110,10 @@ const writeOnImage = async (songsName = []) => {
       });
   };
 
+
 app.get('/', (req, res) => {
     res.send('Spotify twitter header')
   })
+
 app.listen(3000);
 
