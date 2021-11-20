@@ -6,22 +6,27 @@ const Jimp = require('jimp');
 const { getRequest , postRequest } = require('./requestPromise');
 const client = require('twitter-api-client');
 
+app = express();
+
 
 const twitterClient = new client.TwitterClient({
     apiKey: process.env.TWITTER_API_KEY, //YOUR CONSUMER API KEY
     apiSecret: process.env.TWITTER_API_SECRET, //YOUR CONSUMER API SECRET
     accessToken: process.env.TWITTER_ACCESS_TOKEN, //YOUR ACCESS TOKEN
     accessTokenSecret: process.env.TWITTER_ACCESS_SECRET, //YOUR ACCESS TOKEN SECRET
-  });
+});
 
 
 
 
-// cron job to run every day at 12:00 AM
+// cron job to run every day at 12:00 AM to update twitter banner
 cron.schedule('0 0 * * *', async () => {
     console.log('running a task every day at 12:00 AM');
-
+    spotifyTopList().then(res => {
+    writeOnImage(res);
 });
+});
+
 
 
 
@@ -65,10 +70,8 @@ const spotifyRefreshToken = async () => {
       return res.access_token;
 }
     
-spotifyTopList().then(res => {
-    writeOnImage(res);
-});
 
+console.log('test');
 
 
 
@@ -115,3 +118,9 @@ const writeOnImage = async (songsName = []) => {
         console.error(err);
       });
   };
+
+app.get('/', (req, res) => {
+    res.send('Spotify twitter header')
+  })
+app.listen(3000);
+
